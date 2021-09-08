@@ -1,6 +1,5 @@
 package com.example.exercise2.ui
 
-import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -17,8 +16,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class HomeViewModel : ViewModel() {
-
-    private lateinit var sharedPreferences: SharedPreferences
 
     private val shops = MutableLiveData<Shops>().apply {
         mutableListOf<Shops>()
@@ -47,7 +44,6 @@ class HomeViewModel : ViewModel() {
             items?.access_token?.let { DataStore.saveAuthToken(it) }
 
            getShops()
-
         }
         loadingLiveData.postValue(false)
 

@@ -14,11 +14,13 @@
         android:hint="Search"/>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appCompatEditText" />
-
+        app:layout_constraintTop_toBottomOf="@+id/appCompatEditText"
+        app:layout_constraintVertical_bias="1.0"
+        tools:layout_editor_absoluteX="34dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
