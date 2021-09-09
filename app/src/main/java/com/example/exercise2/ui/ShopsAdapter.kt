@@ -1,15 +1,23 @@
 package com.example.exercise2.ui
 
 import android.annotation.SuppressLint
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.graphics.drawable.toDrawable
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.exercise2.R
 import com.example.exercise2.databinding.ItemShopBinding
 import com.example.exercise2.model.shops.Shop
-import com.example.exercise2.model.shops.Shops
 import java.text.SimpleDateFormat
 import java.util.*
+import android.R.color
+import android.graphics.Color
+import androidx.core.view.isVisible
+import android.util.Log
+import androidx.core.util.toRange
+import java.text.ParseException
 
 
 class ShopsAdapter : RecyclerView.Adapter<ShopsAdapter.ShopsViewHolder>() {
@@ -20,33 +28,49 @@ class ShopsAdapter : RecyclerView.Adapter<ShopsAdapter.ShopsViewHolder>() {
         RecyclerView.ViewHolder(binding.root) {
         private lateinit var model: Shop
 
-        @SuppressLint("SimpleDateFormat")
+        @SuppressLint("SimpleDateFormat", "SetTextI18n")
         fun bind() {
             model = shops[adapterPosition]
+
             itemView.apply {
                 Glide.with(this).load(model.backgroundUrl).into(binding.ivBackground)
                 Glide.with(this).load(model.logoUrl).into(binding.ivLogo)
                 binding.shopName.text = model.name
-                /* if (model.isActive!!) {
-                     binding.tvDeliveryStatus.text = "No Delivery"
-                 }*/
-                binding.shopName.text = model.name
-
             }
+            binding.shopName.text = model.name
+
             val c: Calendar = Calendar.getInstance()
-            val sdf = SimpleDateFormat("yyyy-MM-dd")
-            val strDate: String = sdf.format(c.getTime())
+            val sdf = SimpleDateFormat("kk:mm:ss")
+          //  val currentTime: String = sdf.format(c.time)
+            val currentTime = "09:00:00"
 
-            for (i in model.workingHours) {
-                if (i.working) {
-                    binding.tvDeliveryStatus.text = i.day
+
+
+            for (time in model.workingHours) {
+
+                val workingHours = time.from..time.to
+                val working = time.working
+
+                if (working && !workingHours.contains(currentTime)) {
+
+                    binding.apply {
+                        ivBackground.setColorFilter(Color.argb(155, 0, 0, 0))
+                        ivMoonIcon.isVisible = true
+                        tvWorkingHours.isVisible = true
+                        btnOrderPlaning.isVisible = true
+                        tvWorkingHours.text = "${time.day}, ${time.from} - ${time.to}"
+
+                    }
+
+
+                } else {
+                    binding.tvCurrentTime.text = "######"
+
                 }
+                binding.tvDeliveryStatus.text = workingHours.toString()
+               // binding.tvCurrentTime.text = currentTime
             }
-
-
-            binding.tvDeliveryStatus.text = strDate
         }
-        // if true and
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ShopsViewHolder(
