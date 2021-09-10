@@ -100,7 +100,6 @@
             android:id="@+id/tvCurrentTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="current time"
             app:layout_constraintBottom_toBottomOf="@+id/tvDeliveryStatus"
             app:layout_constraintEnd_toEndOf="@+id/tvDeliveryStatus" />
 
