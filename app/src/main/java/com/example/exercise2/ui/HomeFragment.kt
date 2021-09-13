@@ -4,13 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.exercise2.app.snackbar
 import com.example.exercise2.databinding.HomeFragmentBinding
-import com.example.exercise2.model.shops.Shop
 import com.example.exercise2.utils.EventObserver
 
 class HomeFragment : Fragment() {
@@ -29,10 +28,9 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         observes()
         setupRecyclerView()
-       // setListeners()
+        // setListeners()
 
     }
 
@@ -54,16 +52,20 @@ class HomeFragment : Fragment() {
 
         viewModel.postLiveData.observe(viewLifecycleOwner, EventObserver(
             onError = {
-                binding.recyclerview.hideShimmer()
+                //binding.progressBar.isVisible = false
                 snackbar(it)
             },
             onLoading = {
-                binding.recyclerview.showShimmer()
+                binding.progressBar.isVisible = true
             }
 
         ) {
+            binding.progressBar.isVisible = false
             shopsAdapter.setData(it.shops.toMutableList())
-            binding.recyclerview.hideShimmer()
+
+            // binding.recyclerview.hideShimmer()
+
+
         })
     }
 }

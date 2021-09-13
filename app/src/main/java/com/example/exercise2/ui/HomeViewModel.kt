@@ -13,13 +13,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class HomeViewModel() : ViewModel() {
+class HomeViewModel : ViewModel() {
 
     private lateinit var repository: Repository
 
 
     private val _postTokenLiveData = MutableLiveData<Event<Resource<AuthToken>>>()
-    val postTokenLiveData: LiveData<Event<Resource<AuthToken>>> = _postTokenLiveData
 
     private val _postLiveData = MutableLiveData<Event<Resource<Shops>>>()
     val postLiveData: LiveData<Event<Resource<Shops>>> = _postLiveData

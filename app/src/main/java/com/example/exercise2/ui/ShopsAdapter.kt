@@ -33,9 +33,65 @@ class ShopsAdapter : RecyclerView.Adapter<ShopsAdapter.ShopsViewHolder>() {
             }
             binding.shopName.text = model.name
 
+
+
             for (time in model.workingHours) {
 
+                val calendar = Calendar.getInstance()
+                val simpleDateFormat = SimpleDateFormat("HH:mm:ss")
+                val dateTime = simpleDateFormat.format(calendar.time).toString()
+                binding.tvDeliveryStatus.text = dateTime
+
+
                 try {
+
+                    /*   fun getDayOfWeek(date:Date) : Int{
+                           val c = Calendar.getInstance()
+                           c.time = date
+                           return c[Calendar.DAY_OF_WEEK]
+
+                       }*/
+                    val openTime = time.from     //"20:11:13"
+                    val time1 = SimpleDateFormat("HH:mm:ss").parse(openTime)
+                    val calendar1 = Calendar.getInstance()
+                    calendar1.time = time1
+
+                    calendar1.add(Calendar.DAY_OF_WEEK, 1)
+                    val string2 = time.to    //"14:49:00"
+                    val time2 = SimpleDateFormat("HH:mm:ss").parse(string2)
+                    val calendar2 = Calendar.getInstance()
+
+                    // current date
+                    calendar2.time = time2
+                   // calendar2.add(Calendar.DAY_OF_WEEK, 0)
+                    // val dd = calendar2.get(Calendar.DAY_OF_WEEK)
+                    val someRandomTime = dateTime
+                    val d = SimpleDateFormat("HH:mm:ss").parse(someRandomTime)
+
+                    val calendar3 = Calendar.getInstance()
+                    calendar3.time = d
+                    calendar3.add(Calendar.DAY_OF_WEEK, 1)
+                    val x = calendar3.time
+                    if (x.after(calendar1.time) && x.before(calendar2.time)) {
+                        //checkes whether the current time is between 14:49:00 and 20:11:13.
+                        // println(true)
+
+                      //  binding.tvDeliveryStatus.text = "######"
+
+                        binding.apply {
+                            ivBackground.setColorFilter(Color.argb(155, 0, 0, 0))
+                            ivMoonIcon.isVisible = true
+                            tvWorkingHours.isVisible = true
+                            btnOrderPlaning.isVisible = true
+                            // tvWorkingHours.text = "${time.day}, $openTime - $closeTime"
+                        }
+                    }
+                } catch (e: ParseException) {
+                    e.printStackTrace()
+                }
+
+
+                /*try {
                     val startingTime = time.from
                     val finishingTime = time.to
                     val formatShort = SimpleDateFormat("HH:MM")
@@ -69,7 +125,7 @@ class ShopsAdapter : RecyclerView.Adapter<ShopsAdapter.ShopsViewHolder>() {
                     // binding.tvDeliveryStatus.text = workingHours.toString()
                 } catch (e: ParseException) {
                     e.printStackTrace()
-                }
+                }*/
             }
         }
     }
