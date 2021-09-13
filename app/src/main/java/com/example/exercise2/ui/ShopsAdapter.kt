@@ -15,7 +15,8 @@ import java.util.*
 
 class ShopsAdapter : RecyclerView.Adapter<ShopsAdapter.ShopsViewHolder>() {
 
-    private val shops = mutableListOf<Shop>()
+
+    private val shop: MutableList<Shop> = mutableListOf()
 
     inner class ShopsViewHolder(private val binding: ItemShopBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -23,7 +24,7 @@ class ShopsAdapter : RecyclerView.Adapter<ShopsAdapter.ShopsViewHolder>() {
 
         @SuppressLint("SimpleDateFormat", "SetTextI18n")
         fun bind() {
-            model = shops[adapterPosition]
+            model = shop[adapterPosition]
 
             itemView.apply {
                 Glide.with(this).load(model.backgroundUrl).into(binding.ivBackground)
@@ -83,10 +84,11 @@ class ShopsAdapter : RecyclerView.Adapter<ShopsAdapter.ShopsViewHolder>() {
         holder.bind()
     }
 
-    override fun getItemCount() = shops.size
+    override fun getItemCount() = shop.size
 
-    fun setData(shops: MutableList<Shop>) {
-        this.shops.addAll(shops)
+    fun setData(shop: MutableList<Shop>) {
+        this.shop.clear()
+        this.shop.addAll(shop)
         notifyDataSetChanged()
     }
 }
