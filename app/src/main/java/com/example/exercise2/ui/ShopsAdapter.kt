@@ -2,16 +2,20 @@ package com.example.exercise2.ui
 
 import android.annotation.SuppressLint
 import android.graphics.Color
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.exercise2.databinding.ItemShopBinding
 import com.example.exercise2.model.shops.Shop
-import java.text.ParseException
-import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 import java.util.*
+
 
 class ShopsAdapter : RecyclerView.Adapter<ShopsAdapter.ShopsViewHolder>() {
 
@@ -22,6 +26,7 @@ class ShopsAdapter : RecyclerView.Adapter<ShopsAdapter.ShopsViewHolder>() {
         RecyclerView.ViewHolder(binding.root) {
         private lateinit var model: Shop
 
+        @RequiresApi(Build.VERSION_CODES.O)
         @SuppressLint("SimpleDateFormat", "SetTextI18n")
         fun bind() {
             model = shop[adapterPosition]
@@ -34,98 +39,51 @@ class ShopsAdapter : RecyclerView.Adapter<ShopsAdapter.ShopsViewHolder>() {
             binding.shopName.text = model.name
 
 
+            for (item in model.workingHours.indices) {
 
-            for (time in model.workingHours) {
+                val currentWeekDay = Calendar.MONDAY
+                val time = model.workingHours[currentWeekDay]
 
-                val calendar = Calendar.getInstance()
-                val simpleDateFormat = SimpleDateFormat("HH:mm:ss")
-                val dateTime = simpleDateFormat.format(calendar.time).toString()
-                binding.tvDeliveryStatus.text = dateTime
+                val current = LocalDateTime.now()
+                val formatter = DateTimeFormatter.ofPattern("EEEE MMM dd yyyy")
+                val formatted = current.format(formatter)
+
+                val formatter2 = DateTimeFormatter.ofPattern("EEEE MMM dd yyyy HH:mm:ss")
+                val formattedCurrentTime = current.format(formatter2)
 
 
-                try {
+                val openHours = "$formatted ${time.from}"
+                val closeHours = "$formatted ${time.to}"
 
-                    /*   fun getDayOfWeek(date:Date) : Int{
-                           val c = Calendar.getInstance()
-                           c.time = date
-                           return c[Calendar.DAY_OF_WEEK]
 
-                       }*/
-                    val openTime = time.from     //"20:11:13"
-                    val time1 = SimpleDateFormat("HH:mm:ss").parse(openTime)
-                    val calendar1 = Calendar.getInstance()
-                    calendar1.time = time1
 
-                    calendar1.add(Calendar.DAY_OF_WEEK, 1)
-                    val string2 = time.to    //"14:49:00"
-                    val time2 = SimpleDateFormat("HH:mm:ss").parse(string2)
-                    val calendar2 = Calendar.getInstance()
+                binding.test.text = currentWeekDay.toString()
 
-                    // current date
-                    calendar2.time = time2
-                   // calendar2.add(Calendar.DAY_OF_WEEK, 0)
-                    // val dd = calendar2.get(Calendar.DAY_OF_WEEK)
-                    val someRandomTime = dateTime
-                    val d = SimpleDateFormat("HH:mm:ss").parse(someRandomTime)
 
-                    val calendar3 = Calendar.getInstance()
-                    calendar3.time = d
-                    calendar3.add(Calendar.DAY_OF_WEEK, 1)
-                    val x = calendar3.time
-                    if (x.after(calendar1.time) && x.before(calendar2.time)) {
-                        //checkes whether the current time is between 14:49:00 and 20:11:13.
-                        // println(true)
-
-                      //  binding.tvDeliveryStatus.text = "######"
-
-                        binding.apply {
-                            ivBackground.setColorFilter(Color.argb(155, 0, 0, 0))
-                            ivMoonIcon.isVisible = true
-                            tvWorkingHours.isVisible = true
-                            btnOrderPlaning.isVisible = true
-                            // tvWorkingHours.text = "${time.day}, $openTime - $closeTime"
-                        }
-                    }
-                } catch (e: ParseException) {
-                    e.printStackTrace()
+                fun convertDateInMilliseconds(date: String): Long {
+                    val formatter3 =
+                        DateTimeFormatter.ofPattern("EEEE MMM dd yyyy HH:mm:ss")
+                    val localDate = LocalDateTime.parse(date, formatter3)
+                    return localDate.atOffset(ZoneOffset.UTC).toInstant().toEpochMilli()
                 }
 
+                val open = convertDateInMilliseconds(openHours)
+                val close = convertDateInMilliseconds(closeHours)
+                val currentTime = convertDateInMilliseconds(formattedCurrentTime)
 
-                /*try {
-                    val startingTime = time.from
-                    val finishingTime = time.to
-                    val formatShort = SimpleDateFormat("HH:MM")
-                    val openTime = formatShort.format(formatShort.parse(startingTime))
-                    val closeTime = formatShort.format(formatShort.parse(finishingTime))
-                    // val workingHours = openTime..closeTime
-                    val isWorking = time.working
+                val work = open..close
+                if (!work.contains(currentTime)) {
 
-                    fun currentTimeBetweenGivenString(s1: String, s2: String): Boolean {
-                        val simpleDateFormat = SimpleDateFormat("HH:MM")
-                        val date1: Date = simpleDateFormat.parse(s1)
-                        val date2: Date = simpleDateFormat.parse(s2)
-                        val d = Date()
-                        val s3 = simpleDateFormat.format(d)
-                        val date3 = simpleDateFormat.parse(s3)
+                    binding.apply {
+                        ivBackground.setColorFilter(Color.argb(155, 0, 0, 0))
+                        ivMoonIcon.isVisible = true
+                        tvWorkingHours.isVisible = true
+                        btnOrderPlaning.isVisible = true
 
-                        return date3 >= date1 && date3 <= date2
+                        val nextWorkingDay = model.workingHours[currentWeekDay+1]
+                        tvWorkingHours.text = "${nextWorkingDay.day}, ${nextWorkingDay.from} - ${nextWorkingDay.to}"
                     }
-                    if (isWorking && currentTimeBetweenGivenString(openTime, closeTime)) {
-
-                     //   binding.tvCurrentTime.text = "######"
-
-                        binding.apply {
-                            ivBackground.setColorFilter(Color.argb(155, 0, 0, 0))
-                            ivMoonIcon.isVisible = true
-                            tvWorkingHours.isVisible = true
-                            btnOrderPlaning.isVisible = true
-                            tvWorkingHours.text = "${time.day}, $openTime - $closeTime"
-                        }
-                    }
-                    // binding.tvDeliveryStatus.text = workingHours.toString()
-                } catch (e: ParseException) {
-                    e.printStackTrace()
-                }*/
+                }
             }
         }
     }
@@ -136,6 +94,7 @@ class ShopsAdapter : RecyclerView.Adapter<ShopsAdapter.ShopsViewHolder>() {
         )
     )
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: ShopsViewHolder, position: Int) {
         holder.bind()
     }

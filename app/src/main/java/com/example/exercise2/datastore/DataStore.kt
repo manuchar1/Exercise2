@@ -1,6 +1,5 @@
 package com.example.exercise2.datastore
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import com.example.exercise2.utils.Constants
