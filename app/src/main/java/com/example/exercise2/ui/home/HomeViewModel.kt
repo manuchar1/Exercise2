@@ -1,4 +1,4 @@
-package com.example.exercise2.ui
+package com.example.exercise2.ui.home
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

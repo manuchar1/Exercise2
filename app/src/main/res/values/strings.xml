@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Exercise2</string>
     <string name="order_planing">Plan Order</string>
+    <string name="home">home</string>
+    <string name="list">list</string>
+    <string name="me">me</string>
+    <string name="search_everywhere">Search Everywhere</string>
 </resources>

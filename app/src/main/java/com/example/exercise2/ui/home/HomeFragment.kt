@@ -1,4 +1,4 @@
-package com.example.exercise2.ui
+package com.example.exercise2.ui.home
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -30,15 +30,7 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         observes()
         setupRecyclerView()
-        // setListeners()
-
     }
-
-/*    private fun setListeners() {
-        binding.swipeToRefresh.setOnRefreshListener {
-            viewModel.initShops()
-        }
-    }*/
 
     private fun setupRecyclerView() = binding.recyclerview.apply {
         viewModel.initShops()
@@ -52,7 +44,7 @@ class HomeFragment : Fragment() {
 
         viewModel.postLiveData.observe(viewLifecycleOwner, EventObserver(
             onError = {
-                //binding.progressBar.isVisible = false
+                binding.progressBar.isVisible = false
                 snackbar(it)
             },
             onLoading = {
@@ -62,10 +54,6 @@ class HomeFragment : Fragment() {
         ) {
             binding.progressBar.isVisible = false
             shopsAdapter.setData(it.shops.toMutableList())
-
-            // binding.recyclerview.hideShimmer()
-
-
         })
     }
 }

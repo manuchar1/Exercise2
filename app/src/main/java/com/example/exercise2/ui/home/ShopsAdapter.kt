@@ -1,4 +1,4 @@
-package com.example.exercise2.ui
+package com.example.exercise2.ui.home
 
 import android.annotation.SuppressLint
 import android.graphics.Color
@@ -39,10 +39,16 @@ class ShopsAdapter : RecyclerView.Adapter<ShopsAdapter.ShopsViewHolder>() {
             binding.shopName.text = model.name
 
 
+
             for (item in model.workingHours.indices) {
 
-                val currentWeekDay = Calendar.MONDAY
-                val time = model.workingHours[currentWeekDay]
+                val calendar = Calendar.getInstance()
+                var currentDayInt = calendar[Calendar.DAY_OF_WEEK]
+                val amPm = calendar[Calendar.AM_PM]
+                val time = model.workingHours[currentDayInt - 1]
+
+
+                //  binding.tvDeliveryStatus.text = time.toString()
 
                 val current = LocalDateTime.now()
                 val formatter = DateTimeFormatter.ofPattern("EEEE MMM dd yyyy")
@@ -55,11 +61,6 @@ class ShopsAdapter : RecyclerView.Adapter<ShopsAdapter.ShopsViewHolder>() {
                 val openHours = "$formatted ${time.from}"
                 val closeHours = "$formatted ${time.to}"
 
-
-
-                binding.test.text = currentWeekDay.toString()
-
-
                 fun convertDateInMilliseconds(date: String): Long {
                     val formatter3 =
                         DateTimeFormatter.ofPattern("EEEE MMM dd yyyy HH:mm:ss")
@@ -69,19 +70,32 @@ class ShopsAdapter : RecyclerView.Adapter<ShopsAdapter.ShopsViewHolder>() {
 
                 val open = convertDateInMilliseconds(openHours)
                 val close = convertDateInMilliseconds(closeHours)
-                val currentTime = convertDateInMilliseconds(formattedCurrentTime)
+                var currentTime = convertDateInMilliseconds(formattedCurrentTime)
 
-                val work = open..close
-                if (!work.contains(currentTime)) {
+                val workingHours = open..close
+                if (!time.working || !workingHours.contains(currentTime)) {
 
                     binding.apply {
                         ivBackground.setColorFilter(Color.argb(155, 0, 0, 0))
-                        ivMoonIcon.isVisible = true
+                        ivMoonIcon.isVisible  = true
                         tvWorkingHours.isVisible = true
                         btnOrderPlaning.isVisible = true
 
-                        val nextWorkingDay = model.workingHours[currentWeekDay+1]
-                        tvWorkingHours.text = "${nextWorkingDay.day}, ${nextWorkingDay.from} - ${nextWorkingDay.to}"
+                        if (amPm == Calendar.AM - 3) {
+
+                            val nextWorkingDay = model.workingHours[currentDayInt - 1]
+                            tvWorkingHours.text =
+                                "${nextWorkingDay.day}, ${nextWorkingDay.from.dropLast(3)} - ${
+                                    nextWorkingDay.to.dropLast(3)
+                                }"
+
+                        } else {
+                            val nextWorkingDay = model.workingHours[currentDayInt]
+                            tvWorkingHours.text =
+                                "${nextWorkingDay.day}, ${nextWorkingDay.from.dropLast(3)} - ${
+                                    nextWorkingDay.to.dropLast(3)
+                                }"
+                        }
                     }
                 }
             }

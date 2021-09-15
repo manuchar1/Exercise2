@@ -67,8 +67,6 @@ dependencies {
     //circular imageview
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
-    // Shimmer recyclerview
-    implementation 'com.facebook.shimmer:shimmer:0.5.0'
-    implementation 'com.todkars:shimmer-recyclerview:0.4.0'
+
 
 }
