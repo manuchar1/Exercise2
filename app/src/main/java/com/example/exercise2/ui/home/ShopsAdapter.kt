@@ -49,7 +49,7 @@ class ShopsAdapter : RecyclerView.Adapter<ShopsAdapter.ShopsViewHolder>() {
 
             for (item in model.workingHours.indices) {
 
-                binding.tvDeliveryStatus.text = time.toString()
+              //  binding.tvDeliveryStatus.text = time.toString()
 
                 val current = LocalDateTime.now()
                 val formatter = DateTimeFormatter.ofPattern("EEEE MMM dd yyyy")
