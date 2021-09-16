@@ -22,13 +22,13 @@ class Repository {
                 CLIENT_SECRET,
                 SCOPE,
             )
-            if (accessToken.isSuccessful){
+            if (accessToken.isSuccessful) {
                 val item = accessToken.body()!!
                 item.access_token.let { DataStore.saveAuthToken(it) }
                 getShops()
                 Resource.Success(item)
-            }else {
-                val error = Gson().fromJson(accessToken.errorBody()!!.string(),Error::class.java)
+            } else {
+                val error = Gson().fromJson(accessToken.errorBody()!!.string(), Error::class.java)
                 Resource.Error(error.toString())
             }
 
@@ -38,11 +38,11 @@ class Repository {
     suspend fun getShops(): Resource<Shops> {
         return safeCall {
             val response = NetworkClient.shopsService.getShops()
-            if (response.isSuccessful){
+            if (response.isSuccessful) {
                 val body = response.body()!!
                 Resource.Success(body)
-            }else {
-                val error = Gson().fromJson(response.errorBody()!!.string(),Error::class.java)
+            } else {
+                val error = Gson().fromJson(response.errorBody()!!.string(), Error::class.java)
                 Resource.Error(error.toString())
             }
 

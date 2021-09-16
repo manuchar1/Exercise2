@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.exercise2.databinding.ItemShopBinding
 import com.example.exercise2.model.shops.Shop
+import com.example.exercise2.model.shops.WorkingHour
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
@@ -40,15 +41,15 @@ class ShopsAdapter : RecyclerView.Adapter<ShopsAdapter.ShopsViewHolder>() {
 
 
 
+
+            val calendar = Calendar.getInstance()
+            val currentDayInt = calendar[Calendar.DAY_OF_WEEK]
+            val amPm = calendar[Calendar.AM_PM]
+            val time = model.workingHours[currentDayInt-1]
+
             for (item in model.workingHours.indices) {
 
-                val calendar = Calendar.getInstance()
-                var currentDayInt = calendar[Calendar.DAY_OF_WEEK]
-                val amPm = calendar[Calendar.AM_PM]
-                val time = model.workingHours[currentDayInt - 1]
-
-
-                //  binding.tvDeliveryStatus.text = time.toString()
+                binding.tvDeliveryStatus.text = time.toString()
 
                 val current = LocalDateTime.now()
                 val formatter = DateTimeFormatter.ofPattern("EEEE MMM dd yyyy")
@@ -56,7 +57,6 @@ class ShopsAdapter : RecyclerView.Adapter<ShopsAdapter.ShopsViewHolder>() {
 
                 val formatter2 = DateTimeFormatter.ofPattern("EEEE MMM dd yyyy HH:mm:ss")
                 val formattedCurrentTime = current.format(formatter2)
-
 
                 val openHours = "$formatted ${time.from}"
                 val closeHours = "$formatted ${time.to}"
@@ -70,31 +70,32 @@ class ShopsAdapter : RecyclerView.Adapter<ShopsAdapter.ShopsViewHolder>() {
 
                 val open = convertDateInMilliseconds(openHours)
                 val close = convertDateInMilliseconds(closeHours)
-                var currentTime = convertDateInMilliseconds(formattedCurrentTime)
+                val currentTime = convertDateInMilliseconds(formattedCurrentTime)
 
                 val workingHours = open..close
+
                 if (!time.working || !workingHours.contains(currentTime)) {
+                    fun showNextWorkingDay(x: Int) {
+                        val nextWorkingDay = model.workingHours[currentDayInt - x]
+                        binding.tvWorkingHours.text =
+                            "${nextWorkingDay.day}," +
+                                    " ${nextWorkingDay.from.dropLast(3)} - ${
+                                        nextWorkingDay.to.dropLast(3)
+                                    }"
+                    }
 
                     binding.apply {
                         ivBackground.setColorFilter(Color.argb(155, 0, 0, 0))
-                        ivMoonIcon.isVisible  = true
+                        ivMoonIcon.isVisible = true
                         tvWorkingHours.isVisible = true
                         btnOrderPlaning.isVisible = true
 
-                        if (amPm == Calendar.AM - 3) {
-
-                            val nextWorkingDay = model.workingHours[currentDayInt - 1]
-                            tvWorkingHours.text =
-                                "${nextWorkingDay.day}, ${nextWorkingDay.from.dropLast(3)} - ${
-                                    nextWorkingDay.to.dropLast(3)
-                                }"
-
+                        if (amPm == Calendar.AM) {
+                            showNextWorkingDay(1)
+                           // binding.tvDeliveryStatus.text = "###"
                         } else {
-                            val nextWorkingDay = model.workingHours[currentDayInt]
-                            tvWorkingHours.text =
-                                "${nextWorkingDay.day}, ${nextWorkingDay.from.dropLast(3)} - ${
-                                    nextWorkingDay.to.dropLast(3)
-                                }"
+                            showNextWorkingDay(0)
+                          //  binding.tvDeliveryStatus.text = "@@@@"
                         }
                     }
                 }
