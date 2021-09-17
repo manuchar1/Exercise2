@@ -90,7 +90,7 @@ class ShopsAdapter : RecyclerView.Adapter<ShopsAdapter.ShopsViewHolder>() {
                         tvWorkingHours.isVisible = true
                         btnOrderPlaning.isVisible = true
 
-                        if (amPm == Calendar.AM) {
+                        if (amPm == Calendar.PM) {
                             showNextWorkingDay(1)
                            // binding.tvDeliveryStatus.text = "###"
                         } else {
